@@ -13,10 +13,21 @@ async function takeFile(filepath){
     const enconding = 'utf-8';
     try{
         const result = await fs.promises.readFile(filepath, enconding);
-        printFile(result);
+        // console.log(extractUrl(result));
+        return extractUrl(result);
     } catch(er){
         erro(er);
     }
+}
+
+function extractUrl(string){
+    const regex = /\[([^\]]*)\]\((https?:\/\/[^$#\s].[^\s]*)\)/gm;
+    const arrayResult = [];
+    let temp;
+    while((temp = regex.exec(string)) !== null){
+        arrayResult.push({ [temp[1]]: temp[2] })
+    }
+    return arrayResult;
 }
 
 // Function async
@@ -34,4 +45,7 @@ async function takeFile(filepath){
 //     fs.readFile(filepath, enconding, (er, file) => {er ? erro(er) : printFile(file)})
 // }
 
-takeFile('./files/texto1.md');
+// takeFile('./files/texto1.md');
+
+// Exportando para usar em cli.js
+export {takeFile};
